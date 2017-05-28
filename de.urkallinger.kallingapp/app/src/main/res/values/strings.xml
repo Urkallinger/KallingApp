@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">KallingApp</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="nav_motions">Anträge</string>
+    <string name="nav_finances">Kallingkasse</string>
+    <string name="nav_calendar">Kalender</string>
+    <string name="navigation_drawer_open">Navigation öffnen</string>
+    <string name="navigation_drawer_close">Navigation schließen</string>
+    <string name="nav_news">Neuigkeiten</string>
+    <string name="motion_type">Art des Antrags</string>
+    <string name="motion_description">Inhalt des Antrags</string>
+    <string name="motion_add_new">Neuen Antrag hinzufügen</string>
+    <string name="motion_menu_save">Speichern</string>
+    <string name="motion_menu_add_attachment">Anhang hinzufügen</string>
+    <string name="empty_textfield_error">Dieses Feld muss ausgefüllt werden.</string>
+    <string name="motion_detail_edit">Bearbeiten</string>
+</resources>

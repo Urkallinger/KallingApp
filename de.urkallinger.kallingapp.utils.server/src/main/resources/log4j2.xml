@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN"
+	packages="de.urkallinger.kallingapp.utils.server.utils">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n" />
+		</Console>
+		<File name="File"
+			fileName="${sys:java.io.tmpdir}/KallingAppServer/KallingAppServer.log">
+			<PatternLayout>
+				<pattern>
+					%d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n
+				</pattern>
+			</PatternLayout>
+		</File>
+		<ListViewAppender name="ListView" maxLines="1000">
+			<PatternLayout>
+				<pattern>
+					%d{HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n
+				</pattern>
+			</PatternLayout>
+		</ListViewAppender>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="File" />
+			<AppenderRef ref="ListView" />
+		</Root>
+	</Loggers>
+</Configuration>

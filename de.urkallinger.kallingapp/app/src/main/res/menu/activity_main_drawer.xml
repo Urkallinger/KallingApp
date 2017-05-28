@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_news"
+            android:icon="@drawable/ic_news"
+            android:title="@string/nav_news" />
+        <item
+            android:id="@+id/nav_motions"
+            android:icon="@drawable/ic_motions"
+            android:title="@string/nav_motions" />
+        <item
+            android:id="@+id/nav_finances"
+            android:icon="@drawable/ic_finances"
+            android:title="@string/nav_finances" />
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/nav_calendar" />
+    </group>
+</menu>

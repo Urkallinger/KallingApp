@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KallingApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="nav_motions">Motions</string>
+    <string name="nav_finances">Finances</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="navigation_drawer_open">Open Navigation</string>
+    <string name="navigation_drawer_close">Close Navigation</string>
+    <string name="nav_news">News</string>
+    <string name="motion_type">Type of motion</string>
+    <string name="motion_description">Description</string>
+    <string name="motion_add_new">Add new motion</string>
+    <string name="motion_menu_save">Save</string>
+    <string name="motion_menu_add_attachment">Add attachment</string>
+    <string name="empty_textfield_error">This field can\'t be empty.</string>
+    <string name="motion_detail_edit">Edit</string>
+</resources>

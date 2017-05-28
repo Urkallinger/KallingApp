@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <RelativeLayout
+        android:id="@+id/motion_header"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#ffffff"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/motion_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textAlignment="center"
+            android:text="Title"
+            android:textSize="24sp"
+            android:textStyle="normal|bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b3b3b3"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:background="#ffffff"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b3b3b3"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/motion_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Info"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/motion_fab_positiv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/thumb_positiv"
+            app:backgroundTint="@android:color/holo_green_light"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="20dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/motion_fab_negativ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/thumb_negativ"
+            app:backgroundTint="@android:color/holo_red_dark"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="20dp"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:layout_below="@+id/motion_header"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/motion_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="18sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+        </TextView>
+    </ScrollView>
+
+</RelativeLayout>

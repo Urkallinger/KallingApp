@@ -1,0 +1,7 @@
+/.classpath
+/.project
+/.settings/*.prefs
+/target/classes/de/urkallinger/kallingapp/webservice/*.class
+/target/*.jar
+*.class
+/target/
