@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,28 +20,38 @@ import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.User;
-import de.urkallinger.kallingapp.webservice.Param.GetUserParam;
-import de.urkallinger.kallingapp.webservice.Param.LoginParam;
+import de.urkallinger.kallingapp.webservice.Param.LoginData;
+import de.urkallinger.kallingapp.webservice.Param.LoginResult;
+import de.urkallinger.kallingapp.webservice.Param.UserId;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
 @Path("kallingapp")
 public class DataProvider {
-	private final Logger LOGGER = LoggerFactory.getLogger(DataProvider.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(DataProvider.class);
 
 	@Context
 	private HttpServletRequest hsr;
 
-	public DataProvider() {}
+	public DataProvider() {
+	}
 
+	@GET
+	@Path("test")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String test() {
+		LOGGER.info("new test request (from: " + getClientIp() + ")");
+		return "HALLOECHEN";
+	}
+	
 	@POST
 	@Path("login")
 	@Produces(MediaType.APPLICATION_JSON)
-	public LoginResult login(final LoginParam input) {
+	public LoginResult login(final LoginData input) {
 
 		LOGGER.info("new login request for user " + input.username + " (from: " + getClientIp() + ")");
 
-		LoginResult result = new LoginResult("login");
+		LoginResult result = new LoginResult();
 		EntityManager em = null;
 		try {
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
@@ -51,7 +62,7 @@ public class DataProvider {
 			q.setParameter("pw", input.password);
 
 			long count = (long) q.getSingleResult();
-			result.setSuccess(count > 0);
+			result.success = count > 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -112,39 +123,41 @@ public class DataProvider {
 
 		return users;
 	}
-	
+
 	@POST
 	@Path("createUser")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createUser(User user) {
+	public UserId createUser(User user) {
 
-		LOGGER.info("new createUser request (from: " + getClientIp() + ")");
-		
-		LOGGER.info("ID: " + user.getId());
-		LOGGER.info("Username: " + user.getUsername());
-		LOGGER.info("Password: " + user.getPassword());
+		LOGGER.info(String.format("new createUser request (from: %s)", getClientIp()));
 
+		LOGGER.info(" -> Username: " + user.getUsername());
 		EntityManager em = null;
+		UserId result = new UserId();
 		try {
-			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-			dbHelper.persist(user);
+			if (user.getUsername() != null && !"".equals(user.getUsername())
+					&& user.getPassword() != null && !"".equals(user.getPassword())) {
+				DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+				dbHelper.persist(user);
+				result.id = user.getId();
+				return result;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "FAILED";
+			
 		} finally {
 			if (em != null) {
 				em.close();
 			}
 		}
-
-		return "SUCCESS";
+		return result;
 	}
 
 	@POST
 	@Path("getUser")
 	@Consumes("application/json")
 	@Produces(MediaType.APPLICATION_JSON)
-	public User getUser(final GetUserParam input) {
+	public User getUser(final UserId input) {
 
 		LOGGER.info("new getUser for user ID " + input.id + " (from: " + getClientIp() + ")");
 
@@ -172,33 +185,5 @@ public class DataProvider {
 
 	private String getClientIp() {
 		return hsr.getRemoteAddr();
-	}
-
-	static class LoginResult {
-		boolean success = false;
-		String action;
-
-		public LoginResult() {
-		}
-
-		public LoginResult(String action) {
-			this.action = action;
-		}
-
-		public String getAction() {
-			return action;
-		}
-
-		public void setAction(String action) {
-			this.action = action;
-		}
-
-		public boolean getSuccess() {
-			return success;
-		}
-
-		public void setSuccess(boolean success) {
-			this.success = success;
-		}
 	}
 }

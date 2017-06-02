@@ -5,12 +5,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class Param {
     @XmlRootElement
-    public static class GetUserParam {
-        @XmlElement public Long id;
+    public static class UserId {
+        @XmlElement public Long id = -1L;
     }
     
     @XmlRootElement
-    public static class LoginParam {
+    public static class LoginResult {
+    	@XmlElement public boolean success = false;
+    }
+    
+    @XmlRootElement
+    public static class LoginData {
         @XmlElement public String username;
         @XmlElement public String password;
     }
