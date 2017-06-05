@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import de.urkallinger.kallingapp.webservice.config.Configuration;
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.config.DynDnsConfiguration;
+import de.urkallinger.kallingapp.webservice.exceptions.InvalidConfigurationException;
 import de.urkallinger.kallingapp.webservice.utils.WebUtils;
 
 public class NoIpDynDnsUpdater implements Runnable {
@@ -26,6 +27,8 @@ public class NoIpDynDnsUpdater implements Runnable {
 		String hostIp = WebUtils.getPublicIp();
 
 		try {
+			validateConfiguration(dnsCfg);
+			
 			if(dnsCfg.getHostIp().equals(hostIp)) {
 				LOGGER.info("IP address is current, no update necessary.");
 				return;
@@ -63,9 +66,10 @@ public class NoIpDynDnsUpdater implements Runnable {
 			interpretNoIpResponse(response);
 
 			connection.disconnect();
-
-		} catch (Exception ex) {
-			LOGGER.error(ex.getMessage(), ex);
+		} catch (InvalidConfigurationException e) {
+			LOGGER.error(e.getMessage());
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
 		}
 
 	}
@@ -109,6 +113,18 @@ public class NoIpDynDnsUpdater implements Runnable {
 			LOGGER.error("A fatal error on our side such as a database outage. "
 					+ "Retry the update no sooner than 30 minutes.");
 			return;
+		}
+	}
+	
+	private void validateConfiguration(DynDnsConfiguration cfg) throws Exception {
+		if(cfg.getUsername() == null || "".equals(cfg.getUsername())) {
+			throw new InvalidConfigurationException("DynDNS update failed. No username defined in configuration.");
+		}
+		if(cfg.getPassword() == null || "".equals(cfg.getPassword())) {
+			throw new InvalidConfigurationException("DynDNS update failed. No password defined in configuration.");
+		}
+		if(cfg.getHostName() == null || "".equals(cfg.getHostName())) {
+			throw new InvalidConfigurationException("DynDNS update failed. No hostname defined in configuration.");
 		}
 	}
 

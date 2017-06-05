@@ -5,3 +5,4 @@
 /target/*.jar
 *.class
 /target/
+/target/

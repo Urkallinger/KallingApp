@@ -8,7 +8,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -35,25 +34,18 @@ public class DataProvider {
 
 	public DataProvider() {
 	}
-
-	@GET
-	@Path("test")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String test() {
-		LOGGER.info("new test request (from: " + getClientIp() + ")");
-		return "HALLOECHEN";
-	}
 	
 	@POST
 	@Path("login")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public LoginResult login(final LoginData input) {
-
-		LOGGER.info("new login request for user " + input.username + " (from: " + getClientIp() + ")");
-
+		
 		LoginResult result = new LoginResult();
 		EntityManager em = null;
 		try {
+			LOGGER.info("new login request for user " + input.username + " (from: " + getClientIp() + ")");
+
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 			em = dbHelper.getEntityManager();
 
@@ -126,6 +118,7 @@ public class DataProvider {
 
 	@POST
 	@Path("createUser")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserId createUser(User user) {
 
@@ -155,15 +148,15 @@ public class DataProvider {
 
 	@POST
 	@Path("getUser")
-	@Consumes("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public User getUser(final UserId input) {
-
-		LOGGER.info("new getUser for user ID " + input.id + " (from: " + getClientIp() + ")");
 
 		User user = User.DummyUser();
 		EntityManager em = null;
 		try {
+			LOGGER.info("new getUser for user ID " + input.id + " (from: " + getClientIp() + ")");
+			
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 			em = dbHelper.getEntityManager();
 			Query q = em.createQuery("SELECT u FROM User u WHERE u.id = :id");
