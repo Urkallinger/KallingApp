@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
+import de.urkallinger.kallingapp.webservice.rest.AuthenticationEndpoint;
 import de.urkallinger.kallingapp.webservice.utils.WebUtils;
 
 public class RestServer {
@@ -35,7 +36,8 @@ public class RestServer {
 
         jerseyServlet.setInitParameter(
                 "jersey.config.server.provider.classnames",
-                DataProvider.class.getCanonicalName());
+                String.join(",", DataProvider.class.getCanonicalName(),
+                				 AuthenticationEndpoint.class.getCanonicalName()));
 
         try {
             jettyServer.start();

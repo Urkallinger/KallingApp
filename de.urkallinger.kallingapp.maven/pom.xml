@@ -31,7 +31,7 @@
 	<modules>
 		<module>../../KallingAppDataStructure</module>
 		<module>../de.urkallinger.kallingapp.webservice</module>
-		<module>../de.urkallinger.kallingapp.utils.server</module>
+		
 	</modules>
 
 	<dependencies>
