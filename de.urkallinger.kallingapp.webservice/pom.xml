@@ -6,6 +6,12 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>KallingAppWebService</name>
 
+	<parent>
+		<groupId>de.urkallinger.kallingapp.maven</groupId>
+		<artifactId>de.urkallinger.kallingapp.maven</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../de.urkallinger.kallingapp.maven/pom.xml</relativePath>
+	</parent>
 
 	<dependencies>
 		<dependency>
@@ -109,6 +115,8 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
+							<finalName>${project.name}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
 									<mainClass>
@@ -125,10 +133,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<parent>
-		<groupId>de.urkallinger.kallingapp.maven</groupId>
-		<artifactId>de.urkallinger.kallingapp.maven</artifactId>
-		<version>1.0.0</version>
-		<relativePath>../de.urkallinger.kallingapp.maven/pom.xml</relativePath>
-	</parent>
 </project>

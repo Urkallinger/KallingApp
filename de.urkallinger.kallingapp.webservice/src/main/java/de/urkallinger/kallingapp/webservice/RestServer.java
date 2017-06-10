@@ -73,6 +73,7 @@ public class RestServer {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		LOGGER.info("log file path: " + System.getProperty("java.io.tmpdir"));
 		RestServer rs = new RestServer();
 		rs.startServer();
 	}

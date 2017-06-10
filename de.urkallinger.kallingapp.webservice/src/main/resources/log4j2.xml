@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" packages="de.urkallinger.kallingapp.utils.server.utils">
+<Configuration status="WARN"
+	packages="de.urkallinger.kallingapp.utils.server.utils">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n" />
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %msg%n" />
 		</Console>
-		<File name="File" fileName="${sys:java.io.tmpdir}/KallingAppServer/KallingAppServer.log">
+		<File name="File"
+			fileName="${sys:java.io.tmpdir}/KallingAppServer/KallingAppServer-${date:yyyy-MM-dd}.log"
+			append="true">
 			<PatternLayout>
 				<pattern>
-				    %d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n
+					%d{dd.MM.yyyy HH:mm:ss,SSS} - %-5level - %logger{36} - %msg%n
 				</pattern>
 			</PatternLayout>
 		</File>
