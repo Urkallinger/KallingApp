@@ -2,6 +2,9 @@ package de.urkallinger.kallingapp.utils.server;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.urkallinger.kallingapp.utils.server.controller.ButtonBarController;
 import de.urkallinger.kallingapp.utils.server.controller.ConsoleController;
 import javafx.application.Application;
@@ -14,6 +17,8 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(MainApp.class);
+	
 	private Stage stage;
 	private Scene scene;
 
@@ -55,7 +60,7 @@ public class MainApp extends Application {
 			stage.minWidthProperty().set(600.0);
 			stage.show();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("error while initializing root layout", e);
 		}
 	}
 
@@ -69,7 +74,7 @@ public class MainApp extends Application {
 
 			consoleController = loader.getController();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("error while initializing console layout", e);
 		}
 	}
 
@@ -84,7 +89,7 @@ public class MainApp extends Application {
 			buttonBarController = loader.getController();
 			buttonBarController.setConsoleController(consoleController);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("error while initializing button bar", e);
 		}
 	}
 	

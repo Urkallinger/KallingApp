@@ -4,26 +4,26 @@
 	<groupId>de.urkallinger.kallingapp.utils.server</groupId>
 	<artifactId>de.urkallinger.kallingapp.utils.server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Server</name>
-	<description>Server</description>
+	<name>RestServerApp</name>
+	<description>RestServerApp</description>
+
+	<parent>
+		<groupId>de.urkallinger.kallingapp.maven</groupId>
+		<artifactId>de.urkallinger.kallingapp.maven</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../de.urkallinger.kallingapp.maven/pom.xml</relativePath>
+	</parent>
 
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>de.urkallinger.kallingapp.utils.server.MainApp</mainClass>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.7</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.urkallinger.kallingapp.webservice</groupId>
@@ -39,15 +39,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven.plugin.assembly.version}</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -55,11 +56,11 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
+							<finalName>${project.name}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
 							<archive>
 								<manifest>
-									<mainClass>
-										de.urkallinger.kallingapp.utils.server.MainApp
-									</mainClass>
+									<mainClass>${mainClass}</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

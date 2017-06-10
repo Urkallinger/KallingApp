@@ -15,6 +15,10 @@ public class RestServer {
 	private final static Logger LOGGER = LoggerFactory.getLogger(RestServer.class);
 	private Server jettyServer;
 
+	public RestServer() {
+		LOGGER.info("log file path: " + System.getProperty("java.io.tmpdir"));
+	}
+	
 	public void startServer() throws InterruptedException {
 		ConfigurationManager.createOrUpdateConfiguration();
 		
@@ -73,7 +77,6 @@ public class RestServer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		LOGGER.info("log file path: " + System.getProperty("java.io.tmpdir"));
 		RestServer rs = new RestServer();
 		rs.startServer();
 	}
