@@ -14,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.StatusType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,8 @@ import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.rest.Authentication;
-import de.urkallinger.kallingapp.webservice.rest.Param.LoginData;
-import de.urkallinger.kallingapp.webservice.rest.Param.LoginResult;
 import de.urkallinger.kallingapp.webservice.rest.Param.UserId;
+import de.urkallinger.kallingapp.webservice.rest.filter.Secured;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
@@ -36,41 +34,8 @@ public class DataProvider {
 	@Context
 	private HttpServletRequest hsr;
 
-	public DataProvider() {
-	}
-	
 	@POST
-	@Path("login")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public LoginResult login(final LoginData input) {
-		
-		LoginResult result = new LoginResult();
-		EntityManager em = null;
-		try {
-			LOGGER.info("new login request for user " + input.username + " (from: " + getClientIp() + ")");
-
-			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-			em = dbHelper.getEntityManager();
-
-			Query q = em.createQuery("SELECT COUNT(u.id) FROM User u WHERE u.username = :un AND u.password = :pw");
-			q.setParameter("un", input.username);
-			q.setParameter("pw", input.password);
-
-			long count = (long) q.getSingleResult();
-			result.success = count > 0;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
-		}
-
-		return result;
-	}
-
-	@POST
+	@Secured
 	@Path("getMotions")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Motion> getMotions() {
@@ -96,6 +61,7 @@ public class DataProvider {
 	}
 
 	@POST
+	@Secured
 	@Path("getUsers")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getUsers() {
@@ -121,6 +87,7 @@ public class DataProvider {
 	}
 
 	@POST
+	@Secured
 	@Path("createUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -150,6 +117,7 @@ public class DataProvider {
 	@Path("getUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured
 	public Response getUser(final UserId input) {
 
 		EntityManager em = null;

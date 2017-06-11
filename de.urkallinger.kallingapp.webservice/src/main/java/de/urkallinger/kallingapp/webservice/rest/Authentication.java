@@ -2,6 +2,7 @@ package de.urkallinger.kallingapp.webservice.rest;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Date;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import de.urkallinger.kallingapp.datastructure.Token;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.rest.Param.Credentials;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 
 @Path("kallingapp")
@@ -32,13 +34,13 @@ public class Authentication {
     @Path("authentication")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response authenticateUser(User param, @Context HttpServletRequest req) {
+    public Response authenticateUser(Credentials credentials, @Context HttpServletRequest req) {
 
         try {
         	LOGGER.info("new authentication request from " + req.getRemoteAddr());
         	
             // Authenticate the user using the credentials provided
-            User user = authenticate(param.getUsername(), param.getPassword());
+            User user = authenticate(credentials.username, credentials.password);
 
             // Issue a token for the user
             String token = issueToken(user);
@@ -46,7 +48,7 @@ public class Authentication {
             // Return the token on the response
             return Response.ok(token).build();
         } catch (NoResultException e) {
-        	LOGGER.error(String.format("user '%s' could not be authenticated", param.getUsername()));
+        	LOGGER.error(String.format("user '%s' could not be authenticated", credentials.username));
         } catch (Exception e) {
         	LOGGER.error(e.getMessage(), e);
         }
@@ -75,6 +77,8 @@ public class Authentication {
 			userToken = (Token) new DbQuery("SELECT t FROM Token t WHERE t.user = :user")
 	    			.addParam("user", user)
 	    			.getSingleResult();
+			userToken.setCreationDate(new Date());
+			userToken.setToken(token);
 			dbHelper.merge(userToken);
 			
 		} catch (NoResultException e) {

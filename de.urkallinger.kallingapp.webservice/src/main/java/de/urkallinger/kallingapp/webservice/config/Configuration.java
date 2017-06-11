@@ -9,9 +9,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Configuration {
 	
 	private DynDnsConfiguration dynDnsConfig;
+	private RestConfiguration restConfig;
 	
 	public Configuration() {
-		this.dynDnsConfig = new DynDnsConfiguration(); 
+		this.dynDnsConfig = new DynDnsConfiguration();
+		this.restConfig = new RestConfiguration();
 	}
 
 	public DynDnsConfiguration getDynDnsConfig() {
@@ -20,5 +22,13 @@ public class Configuration {
 
 	public void setDynDnsConfig(DynDnsConfiguration dynDnsConfig) {
 		this.dynDnsConfig = dynDnsConfig;
+	}
+
+	public RestConfiguration getRestConfig() {
+		return restConfig;
+	}
+
+	public void setRestConfig(RestConfiguration restConfig) {
+		this.restConfig = restConfig;
 	}
 }
