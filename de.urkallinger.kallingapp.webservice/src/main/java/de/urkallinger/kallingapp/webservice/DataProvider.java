@@ -13,16 +13,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.StatusType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.User;
-import de.urkallinger.kallingapp.webservice.Param.LoginData;
-import de.urkallinger.kallingapp.webservice.Param.LoginResult;
-import de.urkallinger.kallingapp.webservice.Param.UserId;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
+import de.urkallinger.kallingapp.webservice.rest.Authentication;
+import de.urkallinger.kallingapp.webservice.rest.Param.LoginData;
+import de.urkallinger.kallingapp.webservice.rest.Param.LoginResult;
+import de.urkallinger.kallingapp.webservice.rest.Param.UserId;
+import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
 @Path("kallingapp")
@@ -120,39 +124,34 @@ public class DataProvider {
 	@Path("createUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public UserId createUser(User user) {
+	public Response createUser(User user) {
 
 		LOGGER.info(String.format("new createUser request (from: %s)", getClientIp()));
 
-		LOGGER.info(" -> Username: " + user.getUsername());
-		EntityManager em = null;
-		UserId result = new UserId();
+		UserId userId = new UserId();
 		try {
-			if (user.getUsername() != null && !"".equals(user.getUsername())
-					&& user.getPassword() != null && !"".equals(user.getPassword())) {
+			if (user.isValid()) {
+				user.setPassword(HashBuilder.sha512(user.getPassword(), Authentication.SALT));
 				DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 				dbHelper.persist(user);
-				result.id = user.getId();
-				return result;
+				userId.id = user.getId();
+				return Response.ok(userId).build(); 
+			} else {
+				LOGGER.error("user is not valid.");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			
-		} finally {
-			if (em != null) {
-				em.close();
-			}
+			LOGGER.error(e.getMessage(), e);
 		}
-		return result;
+
+		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 
 	@POST
 	@Path("getUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public User getUser(final UserId input) {
+	public Response getUser(final UserId input) {
 
-		User user = User.DummyUser();
 		EntityManager em = null;
 		try {
 			LOGGER.info("new getUser for user ID " + input.id + " (from: " + getClientIp() + ")");
@@ -162,7 +161,8 @@ public class DataProvider {
 			Query q = em.createQuery("SELECT u FROM User u WHERE u.id = :id");
 			q.setParameter("id", input.id);
 
-			user = (User) q.getSingleResult();
+			User user = (User) q.getSingleResult();
+			return Response.ok(user).build();
 		} catch (NoResultException e) {
 
 		} catch (Exception e) {
@@ -173,7 +173,8 @@ public class DataProvider {
 			}
 		}
 
-		return user;
+		// TODO: Response status -> was nimmt man da?!
+		return Response.status(Response.Status.CONFLICT).build();
 	}
 
 	private String getClientIp() {

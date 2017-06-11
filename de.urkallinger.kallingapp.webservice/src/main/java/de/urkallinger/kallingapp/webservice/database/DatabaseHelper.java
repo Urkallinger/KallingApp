@@ -39,4 +39,12 @@ public class DatabaseHelper {
 		em.persist(dob);
 		em.getTransaction().commit();
 	}
+	
+	public void merge(DataObject<?> dob) {
+		EntityManager em = getEntityManager();
+		
+		em.getTransaction().begin();
+		em.merge(dob);
+		em.getTransaction().commit();
+	}
 }

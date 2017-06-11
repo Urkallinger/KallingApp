@@ -1,4 +1,4 @@
-package de.urkallinger.kallingapp.webservice;
+package de.urkallinger.kallingapp.webservice.rest;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
