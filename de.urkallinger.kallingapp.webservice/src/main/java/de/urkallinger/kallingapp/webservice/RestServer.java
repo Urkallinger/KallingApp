@@ -15,6 +15,7 @@ import de.urkallinger.kallingapp.webservice.rest.UserProvider;
 import de.urkallinger.kallingapp.webservice.rest.authentication.AuthenticationFilter;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.rest.authorization.AuthorizationFilter;
+import de.urkallinger.kallingapp.webservice.utils.NoIpDynDnsUpdater;
 import de.urkallinger.kallingapp.webservice.utils.WebUtils;
 
 public class RestServer {

@@ -1,5 +1,7 @@
 package de.urkallinger.kallingapp.webservice.database;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -23,6 +25,15 @@ public class DbQuery {
 		try {
 			Object result = query.getSingleResult();
 			return result;
+		} finally {
+			if(em != null) em.close();
+		}
+	}
+	
+	public List<?> getResultList() {
+		try {
+			List<?> list = query.getResultList();
+			return list;
 		} finally {
 			if(em != null) em.close();
 		}

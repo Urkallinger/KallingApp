@@ -21,7 +21,6 @@ import de.urkallinger.kallingapp.datastructure.Token;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.database.DbQuery;
-import de.urkallinger.kallingapp.webservice.rest.Param.Credentials;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 
 @Path("kallingapp")
@@ -34,13 +33,13 @@ public class Authentication {
     @Path("authentication")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response authenticateUser(Credentials credentials, @Context HttpServletRequest req) {
+    public Response authenticateUser(Param.Credentials credentials, @Context HttpServletRequest req) {
 
         try {
         	LOGGER.info("new authentication request from " + req.getRemoteAddr());
         	
             // Authenticate the user using the credentials provided
-            User user = authenticate(credentials.username, credentials.password);
+            User user = authenticate(credentials.getUsername(), credentials.getPassword());
 
             // Issue a token for the user
             String token = issueToken(user);
@@ -48,7 +47,7 @@ public class Authentication {
             // Return the token on the response
             return Response.ok(token).build();
         } catch (NoResultException e) {
-        	LOGGER.error(String.format("user '%s' could not be authenticated", credentials.username));
+        	LOGGER.error(String.format("user '%s' could not be authenticated", credentials.getUsername()));
         } catch (Exception e) {
         	LOGGER.error(e.getMessage(), e);
         }

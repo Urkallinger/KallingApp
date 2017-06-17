@@ -1,11 +1,8 @@
 package de.urkallinger.kallingapp.webservice.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -21,8 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.User;
+import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
-import de.urkallinger.kallingapp.webservice.rest.Param.UserId;
+import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.rest.Param.Id;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
@@ -40,52 +39,47 @@ public class UserProvider {
 	@Path("createUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createUser(User user) {
+	public Response createUser(User user, @Context SecurityContext ctx) {
 
-		LOGGER.info(String.format("new createUser request (from: %s)", request.getRemoteAddr()));
+		LOGGER.info(String.format("new createUser request (user: '%s', ip: %s)",
+				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
-		UserId userId = new UserId();
 		try {
-			if (user.isValid()) {
-				user.setPassword(HashBuilder.sha512(user.getPassword(), Authentication.SALT));
-				DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-				dbHelper.persist(user);
-				userId.id = user.getId();
-				return Response.ok(userId).build(); 
-			} else {
-				LOGGER.error("user is not valid.");
-			}
+			user.validate();
+			user.setPassword(HashBuilder.sha512(user.getPassword(), Authentication.SALT));
+			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+			dbHelper.persist(user);
+			return Response.ok(new Param.Id(user.getId())).build();
+		} catch (ValidationException e) {
+			LOGGER.error(e.getMessage());
+			return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(e.getMessage())).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(new Param.Message("An internal server error occurred."))
+					.build();
 		}
-
-		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 	
 	@POST
 	@Secured({Role.ADMIN, Role.USER})
 	@Path("getUsers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<User> getUsers() {
+	public Response getUsers(@Context SecurityContext ctx) {
 
-		LOGGER.info(String.format("new getUsers request (from: %s)", request.getRemoteAddr()));
+		LOGGER.info(String.format("new getUsers request (user: '%s', ip: %s)", 
+				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
-		List<User> users = new ArrayList<>();
-		EntityManager em = null;
 		try {
-			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-			em = dbHelper.getEntityManager();
-			Query q = em.createQuery("SELECT u FROM User u");
-			users = ListUtils.castList(User.class, q.getResultList());
+			List<User> users;
+			users = ListUtils.castList(User.class, new DbQuery("SELECT u FROM Users u").getResultList());
+			return Response.ok(users).build();
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
+			LOGGER.error(e.getMessage(), e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(new Param.Message("An internal server error occurred."))
+					.build();
 		}
-
-		return users;
 	}
 	
 	@POST
@@ -93,31 +87,26 @@ public class UserProvider {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured({Role.ADMIN, Role.USER})
-	public Response getUser(final UserId input, @Context SecurityContext ctx) {
+	public Response getUser(final Id input, @Context SecurityContext ctx) {
 
-		EntityManager em = null;
 		try {
-			LOGGER.info(String.format("new getUser for user ID %d (user: '%s', ip: %s)", 
-					input.id, ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
+			LOGGER.info(String.format("new getUser request for user ID %d (user: '%s', ip: %s)", 
+					input.getId(), ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 			
-			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-			em = dbHelper.getEntityManager();
-			Query q = em.createQuery("SELECT u FROM User u WHERE u.id = :id");
-			q.setParameter("id", input.id);
-
-			User user = (User) q.getSingleResult();
+			User user = (User) new DbQuery("SELECT u FROM User u WHERE u.id = :id")
+									.addParam("id", input.getId())
+									.getSingleResult();
+			
 			return Response.ok(user).build();
 		} catch (NoResultException e) {
-
+			String msg = String.format("No user found with id %d", input.getId());
+			LOGGER.error(msg);
+			return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (em != null) {
-				em.close();
-			}
+			LOGGER.error(e.getMessage(), e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity(new Param.Message("An internal server error occurred."))
+					.build();
 		}
-
-		// TODO: Response status -> was nimmt man da?!
-		return Response.status(Response.Status.CONFLICT).build();
 	}
 }

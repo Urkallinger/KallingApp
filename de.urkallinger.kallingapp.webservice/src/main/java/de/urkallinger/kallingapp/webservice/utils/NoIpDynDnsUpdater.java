@@ -1,4 +1,4 @@
-package de.urkallinger.kallingapp.webservice;
+package de.urkallinger.kallingapp.webservice.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -15,7 +15,6 @@ import de.urkallinger.kallingapp.webservice.config.Configuration;
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.config.DynDnsConfiguration;
 import de.urkallinger.kallingapp.webservice.exceptions.InvalidConfigurationException;
-import de.urkallinger.kallingapp.webservice.utils.WebUtils;
 
 public class NoIpDynDnsUpdater implements Runnable {
 
