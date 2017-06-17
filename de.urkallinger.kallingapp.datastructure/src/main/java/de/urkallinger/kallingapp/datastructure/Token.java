@@ -2,11 +2,14 @@ package de.urkallinger.kallingapp.datastructure;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import de.urkallinger.kallingapp.datastructure.annotations.Required;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,10 +17,13 @@ public class Token extends DataObject<Token> {
 
 	private static final long serialVersionUID = 1L;
 
+	@Required
+	@Column(nullable=false)
 	@JsonProperty("token")
 	private String token;
     
-    @OneToOne
+	@Required
+	@OneToOne
     private User user;
 
     @JsonProperty("user")

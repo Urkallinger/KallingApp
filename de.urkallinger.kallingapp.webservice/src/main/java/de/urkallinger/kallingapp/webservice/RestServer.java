@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.rest.Authentication;
+import de.urkallinger.kallingapp.webservice.rest.MotionProvider;
+import de.urkallinger.kallingapp.webservice.rest.UserProvider;
 import de.urkallinger.kallingapp.webservice.rest.authentication.AuthenticationFilter;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.rest.authorization.AuthorizationFilter;
@@ -40,7 +42,8 @@ public class RestServer {
 
         jerseyServlet.setInitParameter(
                 "jersey.config.server.provider.classnames",
-                String.join(",", DataProvider.class.getCanonicalName(),
+                String.join(",", UserProvider.class.getCanonicalName(),
+                				 MotionProvider.class.getCanonicalName(),
                 				 Authentication.class.getCanonicalName(),
                 				 Secured.class.getCanonicalName(),
                 				 AuthenticationFilter.class.getCanonicalName(),

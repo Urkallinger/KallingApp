@@ -12,38 +12,48 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import de.urkallinger.kallingapp.datastructure.annotations.Required;
+
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "title",
         "description",
-        "createdBy",
-        "createdAt"
+        "creator",
+        "creationDate"
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Motion extends DataObject<Motion> {
 	
 	private static final long serialVersionUID = 1L;
 	
+	@Required
+	@Column(nullable=false)
 	@JsonProperty("title")
     private String title;
+	
 	@Lob
     @Column
     @JsonProperty("description")
     private String description;
-    @JsonProperty("createdBy")
-    @OneToOne
-    private User createdBy;
-    @JsonProperty("createdAt")
-    private Date createdAt;
+    
+	@Required
+	@OneToOne
+	@JsonProperty("creator")
+    private User creator;
+    
+	@Required
+	@Column(nullable=false)
+	@JsonProperty("creationDate")
+    private Date creationDate;
 
     public Motion() {}
 
-    public Motion(String title, String description, User createdBy, Date createdAt) {
+    public Motion(String title, String description, User creator, Date creationDate) {
         this.title = title;
         this.description = description;
-        this.createdBy = createdBy;
-        this.createdAt = createdAt;
+        this.creator = creator;
+        this.creationDate = creationDate;
     }
 
 
@@ -69,25 +79,25 @@ public class Motion extends DataObject<Motion> {
         return this;
     }
 
-    @JsonProperty("createdBy")
-    public User getCreatedBy() {
-        return createdBy;
+    @JsonProperty("creator")
+    public User getCreator() {
+        return creator;
     }
 
-    @JsonProperty("createdBy")
-    public Motion setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    @JsonProperty("creator")
+    public Motion setCreator(User creator) {
+        this.creator = creator;
         return this;
     }
 
-    @JsonProperty("createdAt")
-    public Date getCreatedAt() {
-        return createdAt;
+    @JsonProperty("creationDate")
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    @JsonProperty("createdAt")
-    public Motion setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    @JsonProperty("creationDate")
+    public Motion setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
         return this;
     }
     

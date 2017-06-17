@@ -6,26 +6,33 @@ import javax.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import de.urkallinger.kallingapp.datastructure.annotations.Required;
+
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends DataObject<User> {
 
 	private static final long serialVersionUID = 1L;
 
+	@Required
+	@Column(unique=true, nullable=false)
 	@JsonProperty("username")
 	private String username;
 
+	@Required
+	@Column(nullable=false)
 	@JsonProperty("password")
 	private String password;
 
 	@JsonProperty("email")
 	private String email;
 
+	@Required
+	@Column(nullable=false)
 	@JsonProperty("role")
 	private Role role;
 
 	@JsonProperty("username")
-	@Column(unique = true)
 	public String getUsername() {
 		return username;
 	}
@@ -67,11 +74,6 @@ public class User extends DataObject<User> {
 	public User setRole(Role role) {
 		this.role = role;
 		return this;
-	}
-
-	public boolean isValid() {
-		return username != null && !username.isEmpty() && password != null && !password.isEmpty() && email != null
-				&& !email.isEmpty();
 	}
 
 	@Override
