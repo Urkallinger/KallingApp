@@ -37,7 +37,7 @@ public class DataProvider {
 	private HttpServletRequest hsr;
 
 	@POST
-	@Secured
+	@Secured({Role.USER})
 	@Path("getMotions")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Motion> getMotions() {
@@ -63,7 +63,7 @@ public class DataProvider {
 	}
 
 	@POST
-	@Secured
+	@Secured({Role.USER})
 	@Path("getUsers")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getUsers() {
@@ -89,7 +89,7 @@ public class DataProvider {
 	}
 
 	@POST
-	@Secured
+	@Secured({Role.USER})
 	@Path("createUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
