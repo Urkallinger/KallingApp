@@ -8,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
+import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.rest.Authentication;
-import de.urkallinger.kallingapp.webservice.rest.filter.AuthenticationFilter;
-import de.urkallinger.kallingapp.webservice.rest.filter.Secured;
+import de.urkallinger.kallingapp.webservice.rest.authentication.AuthenticationFilter;
+import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
+import de.urkallinger.kallingapp.webservice.rest.authorization.AuthorizationFilter;
 import de.urkallinger.kallingapp.webservice.utils.WebUtils;
 
 public class RestServer {
@@ -41,9 +43,13 @@ public class RestServer {
                 String.join(",", DataProvider.class.getCanonicalName(),
                 				 Authentication.class.getCanonicalName(),
                 				 Secured.class.getCanonicalName(),
-                				 AuthenticationFilter.class.getCanonicalName()));
+                				 AuthenticationFilter.class.getCanonicalName(),
+                				 AuthorizationFilter.class.getCanonicalName()));
 
         try {
+        	DatabaseHelper db = DatabaseHelper.getInstance();
+        	db.getEntityManager().close();
+        	
             jettyServer.start();
             LOGGER.info("Server-IP: " + WebUtils.getPublicIp());
             jettyServer.join();

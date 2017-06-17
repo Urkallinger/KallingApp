@@ -14,16 +14,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.rest.Authentication;
 import de.urkallinger.kallingapp.webservice.rest.Param.UserId;
-import de.urkallinger.kallingapp.webservice.rest.filter.Secured;
+import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
@@ -117,12 +119,13 @@ public class DataProvider {
 	@Path("getUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured
-	public Response getUser(final UserId input) {
+	@Secured({Role.ADMIN})
+	public Response getUser(final UserId input, @Context SecurityContext ctx) {
 
 		EntityManager em = null;
 		try {
-			LOGGER.info("new getUser for user ID " + input.id + " (from: " + getClientIp() + ")");
+			LOGGER.info(String.format("new getUser for user ID %d (user: '%s', ip: %s)", 
+					input.id, ctx.getUserPrincipal().getName(), getClientIp()));
 			
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 			em = dbHelper.getEntityManager();

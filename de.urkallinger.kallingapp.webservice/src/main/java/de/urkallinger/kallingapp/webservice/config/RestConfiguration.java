@@ -22,8 +22,8 @@ public class RestConfiguration {
 	private String tokenDurabilityUnit;
 
 	public RestConfiguration() {
-		this.tokenDurabilityPeriod = 0;
-		this.tokenDurabilityUnit = ChronoUnit.HOURS.toString();
+		this.tokenDurabilityPeriod = 1;
+		this.tokenDurabilityUnit = ChronoUnit.HOURS.toString().toUpperCase();
 	}
 
 	public int getTokenDurabilityPeriod() {
