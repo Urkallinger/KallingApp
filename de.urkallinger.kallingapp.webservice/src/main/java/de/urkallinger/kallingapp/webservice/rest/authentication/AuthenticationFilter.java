@@ -44,8 +44,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		LOGGER.info("authenticate user...");
-
 		// Get the HTTP Authorization header from the request
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -66,7 +64,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			requestContext.setSecurityContext(createSecurityContext(currSecCtx, tok.getUser().getUsername()));
 
 		} catch (NoResultException e) {
-			LOGGER.error("user could not be authenticated because of an invalid token");
+			LOGGER.error("User could not be authenticated because of an invalid token");
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 		} catch (NotAuthorizedException e) {
 			LOGGER.error(e.getMessage());
@@ -88,7 +86,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 					Response.Status.UNAUTHORIZED);
 		}
 
-		LOGGER.info(String.format("user '%s' used '%s' as authentication token",
+		LOGGER.info(String.format("User '%s' used '%s' as authentication token",
 				tok.getUser().getUsername(),
 				tok.getToken()));
 

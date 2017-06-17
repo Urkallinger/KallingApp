@@ -60,7 +60,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 			}
 
 		} catch (ForbiddenException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error(e.getMessage() + String.format(" (Method: '%s')", resourceMethod.getName()));
 			requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -90,10 +90,10 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 					.addParam("un", username)
 					.getSingleResult();
 			if(!allowedRoles.contains(user.getRole())) {
-				throw new ForbiddenException(String.format("User %s is not allowed to use this method.", username));
+				throw new ForbiddenException(String.format("User '%s' is not allowed to use this method.", username));
 			}
 		} catch (NoResultException e) {
-			throw new ForbiddenException(String.format("Cannot find user %s in database.", username));
+			throw new ForbiddenException(String.format("Cannot find user '%s' in database.", username));
 		}
 	}
 }

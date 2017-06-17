@@ -89,7 +89,7 @@ public class DataProvider {
 	}
 
 	@POST
-	@Secured({Role.USER})
+	@Secured({Role.ADMIN})
 	@Path("createUser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
