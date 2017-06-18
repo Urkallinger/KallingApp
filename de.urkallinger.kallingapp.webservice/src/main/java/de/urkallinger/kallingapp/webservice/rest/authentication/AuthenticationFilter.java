@@ -7,7 +7,6 @@ import java.time.Instant;
 
 import javax.annotation.Priority;
 import javax.persistence.NoResultException;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -20,10 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Token;
+import de.urkallinger.kallingapp.datastructure.params.Param;
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.config.RestConfiguration;
 import de.urkallinger.kallingapp.webservice.database.DbSelect;
-import de.urkallinger.kallingapp.webservice.rest.Param;
+import de.urkallinger.kallingapp.webservice.exceptions.UnauthorizedException;
 
 @Secured
 @Provider
@@ -52,7 +52,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			// Check if the HTTP Authorization header is present and formatted
 			// correctly
 			if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-				throw new NotAuthorizedException("Authorization header must be provided");
+				throw new UnauthorizedException("Authorization header must be provided");
 			}
 
 			// Extract the token from the HTTP Authorization header
@@ -69,7 +69,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			LOGGER.error(msg);
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
 					.entity(new Param.Message(msg)).build());
-		} catch (NotAuthorizedException e) {
+		} catch (UnauthorizedException e) {
 			LOGGER.error(e.getMessage());
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
 					.entity(new Param.Message(e.getMessage())).build());
@@ -86,8 +86,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
 		Instant creationDate = tok.getCreationDate().toInstant();
 		if (!creationDate.plus(tokenDurability).isAfter(Instant.now())) {
-			throw new NotAuthorizedException("Could not authorize user because token is expired.",
-					Response.Status.UNAUTHORIZED);
+			throw new UnauthorizedException("Could not authorize user because token is expired.");
 		}
 
 		LOGGER.info(String.format("User '%s' used '%s' as authentication token",

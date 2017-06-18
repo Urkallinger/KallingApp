@@ -9,8 +9,8 @@ import android.widget.EditText;
 
 import java.util.Date;
 
-import de.urkallinger.kallingapp.model.Motion;
-import de.urkallinger.kallingapp.model.User;
+import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.User;
 
 public class NewMotionForm extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class NewMotionForm extends AppCompatActivity {
                 if(checkRequiredFields()) {
                     motion.setTitle(holder.title.getText().toString())
                             .setDescription(holder.description.getText().toString())
-                            .setCreatedAt(new Date());
+                            .setCreationDate(new Date());
 
                     Intent intent = new Intent();
                     intent.putExtra("Motion", motion);

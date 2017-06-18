@@ -11,13 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import de.urkallinger.kallingapp.data.DataHandler;
 import de.urkallinger.kallingapp.data.KallingCallback;
-import de.urkallinger.kallingapp.model.Motion;
-import de.urkallinger.kallingapp.model.User;
+import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.User;
+import de.urkallinger.kallingapp.datastructure.params.Param;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.Response;
 
 
 public class TestFragment extends Fragment {
@@ -59,7 +67,7 @@ public class TestFragment extends Fragment {
         holder.start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login();
+                showMotionTitles();
             }
         });
 
@@ -111,16 +119,25 @@ public class TestFragment extends Fragment {
     }
 
     private void showMotionTitles() {
-        dataHandler.getMotions(new KallingCallback<List<Motion>>() {
+        dataHandler.getMotions(new Callback() {
             @Override
-            public void onFailure(Exception e) {
-                updateDescription("failed", true);
+            public void onFailure(Call call, IOException e) {
+
             }
 
             @Override
-            public void onSuccess(List<Motion> data) {
-                for(Motion m : data) {
-                    updateDescription(m.getTitle() + "\n", true);
+            public void onResponse(Call call, Response response) throws IOException {
+                ObjectMapper mapper = new ObjectMapper();
+                String body = response.body().string();
+                if (response.isSuccessful()) {
+                    List<Motion> motionList = Arrays.asList(mapper.readValue(body, Motion[].class));
+
+                    for(Motion m : motionList) {
+                        updateDescription(m.getTitle() + "\n", true);
+                    }
+                } else {
+                    Param.Message msg = mapper.readValue(body, Param.Message.class);
+                    updateDescription(response.code() + ": " + msg.getMsg() + "\n", true);
                 }
             }
         });

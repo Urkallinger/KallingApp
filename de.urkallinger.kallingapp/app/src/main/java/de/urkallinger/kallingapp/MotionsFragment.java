@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import de.urkallinger.kallingapp.model.Motion;
-import de.urkallinger.kallingapp.model.User;
+import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.User;
 
 import static android.app.Activity.RESULT_OK;
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.urkallinger.kallingapp.model.Motion;
+import de.urkallinger.kallingapp.datastructure.Motion;
 
 
 public class MotionArrayAdapter extends ArrayAdapter<Motion> {

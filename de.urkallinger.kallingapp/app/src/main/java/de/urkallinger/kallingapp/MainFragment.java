@@ -13,13 +13,13 @@ import android.widget.ExpandableListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.urkallinger.kallingapp.model.NewsListElement;
+import de.urkallinger.kallingapp.datastructure.News;
 
 public class MainFragment  extends Fragment {
 
     NewsListAdapter listAdapter;
     ExpandableListView expListView;
-    List<NewsListElement> news;
+    List<News> news;
 
     public MainFragment() {
         // Empty constructor required for fragment subclasses
@@ -66,14 +66,5 @@ public class MainFragment  extends Fragment {
 
     private void prepareListData() {
         news = new ArrayList<>();
-
-        //List<String> news = new ArrayList<>();
-        news.add(new NewsListElement("Kalling gewinnt im Lotto!!", "geil oda?"));
-        news.add(new NewsListElement("Grillo in Aktion", "geil oda?"));
-        news.add(new NewsListElement("Koi ist neuer Sexiest Fish Alive", "geil oda?"));
-        news.add(new NewsListElement("Christian Billig ändert seinen Namen offiziell in Chrip Billig", "geil oda?"));
-        news.add(new NewsListElement("Jessi fällt mit Stuhl um - schon wieder!", "geil oda?"));
-        news.add(new NewsListElement("Apfelsaft entwickelt Eigenleben!", "geil oda?"));
-        news.add(new NewsListElement("Brutal lange Überschrift einer Neuigkeit die absolut keinen Inhalt hat und nur zu Testzwecken da ist und deshalb extra extra extra lang ist!!!", "geil oda?"));
     }
 }

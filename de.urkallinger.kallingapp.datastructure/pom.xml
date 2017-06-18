@@ -9,9 +9,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-			<version>${eclipselink.version}</version>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>${javax.persistence.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -37,8 +37,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
+					<source>${maven.compiler.target.datastructure}</source>
+					<target>${maven.compiler.target.datastructure}</target>
 				</configuration>
 			</plugin>
 			<plugin>

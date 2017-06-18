@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
+import de.urkallinger.kallingapp.datastructure.params.Param;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.database.DbSelect;
 import de.urkallinger.kallingapp.webservice.database.DbUpdate;

@@ -1,4 +1,4 @@
-package de.urkallinger.kallingapp.webservice.rest;
+package de.urkallinger.kallingapp.datastructure.params;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

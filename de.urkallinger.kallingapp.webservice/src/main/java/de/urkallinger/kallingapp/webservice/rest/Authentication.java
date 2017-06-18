@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Token;
 import de.urkallinger.kallingapp.datastructure.User;
+import de.urkallinger.kallingapp.datastructure.params.Param;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
 import de.urkallinger.kallingapp.webservice.database.DbSelect;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;

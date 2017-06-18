@@ -1,5 +1,7 @@
 package de.urkallinger.kallingapp.data;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,8 +12,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import de.urkallinger.kallingapp.model.Motion;
-import de.urkallinger.kallingapp.model.User;
+import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.User;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -19,14 +21,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static android.R.attr.id;
 import static de.urkallinger.kallingapp.TestFragment.JSON;
 
 public class DataHandler {
 
     private static DataHandler instance = null;
 
-    private static final String BASE_URL = "http://178.12.53.27:8080/kallingapp/";
+    private static final String BASE_URL = "http://188.102.243.65:8080/kallingapp/";
 
 
 
@@ -45,23 +46,8 @@ public class DataHandler {
         return instance;
     }
 
-    public void getMotions(final KallingCallback<List<Motion>> kcb) {
-
-        post("getMotions", "", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                kcb.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String resp = response.body().string();
-                    List<Motion> motionList = Arrays.asList(mapper.readValue(resp, Motion[].class));
-                    kcb.onSuccess(motionList);
-                }
-            }
-        });
+    public void getMotions(final Callback callback) {
+        post("motions/getMotions", "", callback);
     }
 
     public void getUsers(final KallingCallback<List<User>> kcb) {

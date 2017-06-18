@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import de.urkallinger.kallingapp.model.NewsListElement;
+import de.urkallinger.kallingapp.datastructure.News;
 
 public class NewsListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<NewsListElement> news;
+    private List<News> news;
 
-    public NewsListAdapter(Context context, List<NewsListElement> news) {
+    public NewsListAdapter(Context context, List<News> news) {
         this.context = context;
         this.news = news;
     }
@@ -73,7 +73,7 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        NewsListElement listElement = (NewsListElement) getGroup(groupPosition);
+        News listElement = (News) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

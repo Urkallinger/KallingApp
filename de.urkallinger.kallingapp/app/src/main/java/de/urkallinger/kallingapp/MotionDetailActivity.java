@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.urkallinger.kallingapp.model.Motion;
+import de.urkallinger.kallingapp.datastructure.Motion;
 
 public class MotionDetailActivity extends AppCompatActivity {
 
@@ -41,7 +41,7 @@ public class MotionDetailActivity extends AppCompatActivity {
     private void updateView() {
         holder.title.setText(motion.getTitle());
         holder.description.setText(motion.getDescription());
-        holder.info.setText(motion.getCreatedBy().getUsername() + ", " + formatDate(motion.getCreatedAt()));
+        holder.info.setText(motion.getCreator().getUsername() + ", " + formatDate(motion.getCreationDate()));
     }
 
     @Override
