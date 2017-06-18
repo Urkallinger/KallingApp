@@ -35,8 +35,8 @@ public class UserProvider {
 	private HttpServletRequest request;
 	
 	@POST
-	@Secured({Role.ADMIN})
 	@Path("createUser")
+	@Secured({Role.ADMIN})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(User user, @Context SecurityContext ctx) {
@@ -62,8 +62,9 @@ public class UserProvider {
 	}
 	
 	@POST
-	@Secured({Role.ADMIN, Role.USER})
 	@Path("getUsers")
+	@Secured({Role.ADMIN, Role.USER})
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUsers(@Context SecurityContext ctx) {
 
@@ -84,9 +85,9 @@ public class UserProvider {
 	
 	@POST
 	@Path("getUser")
+	@Secured({Role.ADMIN, Role.USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured({Role.ADMIN, Role.USER})
 	public Response getUser(final Id input, @Context SecurityContext ctx) {
 
 		try {

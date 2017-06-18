@@ -38,4 +38,13 @@ public class DbQuery {
 			if(em != null) em.close();
 		}
 	}
+	
+	public int executeUpdate() {
+		try {
+			int rowCount = query.executeUpdate();
+			return rowCount;
+		} finally {
+			if(em != null) em.close();
+		}
+	}
 }

@@ -16,7 +16,7 @@ import javax.ws.rs.core.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.urkallinger.kallingapp.datastructure.Motion;
+import de.urkallinger.kallingapp.datastructure.News;
 import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
@@ -24,28 +24,28 @@ import de.urkallinger.kallingapp.webservice.database.DbQuery;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
-@Path("kallingapp/motions")
-public class MotionProvider {
+@Path("kallingapp/news")
+public class NewsProvider {
 
-private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.class);
+private final static Logger LOGGER = LoggerFactory.getLogger(NewsProvider.class);
 	
 	@Context
 	private HttpServletRequest request;
 	
 	@POST
-	@Path("getMotions")
+	@Path("getNews")
 	@Secured({Role.ADMIN, Role.USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMotions(@Context SecurityContext ctx) {
+	public Response getNews(@Context SecurityContext ctx) {
 
-		LOGGER.info(String.format("new getMotions request (user: '%s', ip: %s)",
+		LOGGER.info(String.format("new getNews request (user: '%s', ip: %s)",
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			List<Motion> motions;
-			motions = ListUtils.castList(Motion.class, new DbQuery("SELECT m FROM Motion m").getResultList());
-			return Response.ok(motions).build();
+			List<News> news;
+			news = ListUtils.castList(News.class, new DbQuery("SELECT n FROM News n").getResultList());
+			return Response.ok(news).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -55,21 +55,21 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 	}
 
 	@POST
-	@Path("getMotion")
+	@Path("getNews")
 	@Secured({Role.ADMIN, Role.USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMotion(Param.Id input, @Context SecurityContext ctx) {
+	public Response getNews(Param.Id input, @Context SecurityContext ctx) {
 
-		LOGGER.info(String.format("new getMotion request (user: '%s', ip: %s)", 
+		LOGGER.info(String.format("new getNews request (user: '%s', ip: %s)", 
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			Motion motion = (Motion) new DbQuery("SELECT m FROM Motion m WHERE m.id = :id")
+			News news = (News) new DbQuery("SELECT n FROM News n WHERE n.id = :id")
 					.addParam("id", input.getId())
 					.getSingleResult();
 			
-			return Response.ok(motion).build();
+			return Response.ok(news).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -79,21 +79,21 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 	}
 	
 	@POST
-	@Path("createMotion")
+	@Path("createNews")
 	@Secured({Role.ADMIN, Role.USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMotion(Motion motion, @Context SecurityContext ctx) {
+	public Response createNews(News news, @Context SecurityContext ctx) {
 
-		LOGGER.info(String.format("new createMotion request (user: '%s', ip: %s)", 
+		LOGGER.info(String.format("new createNews request (user: '%s', ip: %s)", 
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			motion.validate();
+			news.validate();
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-			dbHelper.persist(motion);
+			dbHelper.persist(news);
 			
-			return Response.ok(new Param.Id(motion.getId())).build(); 
+			return Response.ok(new Param.Id(news.getId())).build(); 
 
 		} catch (ValidationException e) {
 			LOGGER.error(e.getMessage());
@@ -106,32 +106,32 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 	}
 	
 	@DELETE
-	@Path("deleteMotion")
+	@Path("deleteNews")
 	@Secured({Role.ADMIN, Role.USER})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteMotion(Param.Id input, @Context SecurityContext ctx) {
-		LOGGER.info(String.format("new deleteMotion request (user: '%s', ip: %s)", 
+	public Response deleteNews(Param.Id input, @Context SecurityContext ctx) {
+		LOGGER.info(String.format("new deleteNews request (user: '%s', ip: %s)", 
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			int rowCount = new DbQuery("DELETE FROM Motion m WHERE m.id = :id")
+			int rowCount = new DbQuery("DELETE FROM News n WHERE n.id = :id")
 					.addParam("id", input.getId())
 					.executeUpdate();
 
 			String msg;
 			switch(rowCount) {
 			case 0:
-				msg = String.format("Motion could not be deleted. No Motion with id %d found.", input.getId());
+				msg = String.format("News could not be deleted. No News with id %d found.", input.getId());
 				LOGGER.warn(msg);
 				return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(msg)).build();
 			case 1:
-				msg = String.format("Motion with id %d successfully deleted.", input.getId());
+				msg = String.format("News with id %d successfully deleted.", input.getId());
 				LOGGER.info(msg);
 				return Response.ok(msg).build();
 			default:
 				// TODO: Mittels einer Transaktion könnte man diesen Fall vermeiden bzw. rückgängig machen
-				msg = String.format("Several motions (%d) have been deleted. That should not have happened.", rowCount);
+				msg = String.format("Several news (%d) have been deleted. That should not have happened.", rowCount);
 				LOGGER.error(msg);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
 			}
