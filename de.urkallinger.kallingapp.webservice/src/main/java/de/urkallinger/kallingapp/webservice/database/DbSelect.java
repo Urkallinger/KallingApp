@@ -5,18 +5,18 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public class DbQuery {
+public class DbSelect {
 	private Query query;
 	private DatabaseHelper db = null;
 	private EntityManager em = null;
 	
-	public DbQuery(String queryString) {
+	public DbSelect(String queryString) {
 		db = DatabaseHelper.getInstance();
 		em = db.getEntityManager();
 		query = em.createQuery(queryString); 
 	}
 	
-	public DbQuery addParam(String name, Object value) {
+	public DbSelect addParam(String name, Object value) {
 		query.setParameter(name, value);
 		return this;
 	}
@@ -34,15 +34,6 @@ public class DbQuery {
 		try {
 			List<?> list = query.getResultList();
 			return list;
-		} finally {
-			if(em != null) em.close();
-		}
-	}
-	
-	public int executeUpdate() {
-		try {
-			int rowCount = query.executeUpdate();
-			return rowCount;
 		} finally {
 			if(em != null) em.close();
 		}

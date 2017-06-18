@@ -2,6 +2,7 @@ package de.urkallinger.kallingapp.webservice.rest;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,7 +21,8 @@ import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
-import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.database.DbSelect;
+import de.urkallinger.kallingapp.webservice.database.DbUpdate;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.utils.ListUtils;
 
@@ -44,7 +46,7 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 
 		try {
 			List<Motion> motions;
-			motions = ListUtils.castList(Motion.class, new DbQuery("SELECT m FROM Motion m").getResultList());
+			motions = ListUtils.castList(Motion.class, new DbSelect("SELECT m FROM Motion m").getResultList());
 			return Response.ok(motions).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -65,11 +67,15 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			Motion motion = (Motion) new DbQuery("SELECT m FROM Motion m WHERE m.id = :id")
+			Motion motion = (Motion) new DbSelect("SELECT m FROM Motion m WHERE m.id = :id")
 					.addParam("id", input.getId())
 					.getSingleResult();
 			
 			return Response.ok(motion).build();
+		} catch (NoResultException e) {
+			String msg = String.format("No motion found with id %d", input.getId());
+			LOGGER.error(msg);
+			return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(msg)).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -97,7 +103,7 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 
 		} catch (ValidationException e) {
 			LOGGER.error(e.getMessage());
-			return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(e.getMessage())).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new Param.Message("An internal server error occurred."))
@@ -115,28 +121,38 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 				ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 
 		try {
-			int rowCount = new DbQuery("DELETE FROM Motion m WHERE m.id = :id")
+			DbUpdate update = new DbUpdate();
+			update.beginTransaction();
+			
+			int rowCount = update.query("DELETE FROM Motion m WHERE m.id = :id")
 					.addParam("id", input.getId())
 					.executeUpdate();
-
+			
 			String msg;
 			switch(rowCount) {
 			case 0:
-				msg = String.format("Motion could not be deleted. No Motion with id %d found.", input.getId());
+				update.commitTransation();
+				
+				msg = String.format("Motion could not be deleted. No motion with id %d found.", input.getId());
 				LOGGER.warn(msg);
 				return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(msg)).build();
 			case 1:
+				update.commitTransation();
+				
 				msg = String.format("Motion with id %d successfully deleted.", input.getId());
 				LOGGER.info(msg);
-				return Response.ok(msg).build();
+				return Response.ok(new Param.Message(msg)).build();
 			default:
-				// TODO: Mittels einer Transaktion könnte man diesen Fall vermeiden bzw. rückgängig machen
-				msg = String.format("Several motions (%d) have been deleted. That should not have happened.", rowCount);
+				update.rollbackTransation();
+				
+				msg = String.format("Several motions (%d) would have been deleted. A rollback was performed.", 
+						rowCount);
 				LOGGER.error(msg);
-				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(msg).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(msg)).build();
 			}
 
 		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new Param.Message("An internal server error occurred."))
 					.build();

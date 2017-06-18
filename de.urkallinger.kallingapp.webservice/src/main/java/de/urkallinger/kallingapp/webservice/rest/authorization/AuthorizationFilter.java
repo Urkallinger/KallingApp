@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.User;
-import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.database.DbSelect;
 import de.urkallinger.kallingapp.webservice.rest.authentication.AuthenticationFilter;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 
@@ -86,7 +86,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 	private void checkPermissions(List<Role> allowedRoles, String username) throws ForbiddenException {
 		
 		try {
-			User user = (User) new DbQuery("SELECT u FROM User u WHERE u.username = :un")
+			User user = (User) new DbSelect("SELECT u FROM User u WHERE u.username = :un")
 					.addParam("un", username)
 					.getSingleResult();
 			if(!allowedRoles.contains(user.getRole())) {

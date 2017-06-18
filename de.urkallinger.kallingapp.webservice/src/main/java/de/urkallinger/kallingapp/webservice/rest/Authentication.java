@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import de.urkallinger.kallingapp.datastructure.Token;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
-import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.database.DbSelect;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
 
 @Path("kallingapp")
@@ -57,7 +57,7 @@ public class Authentication {
 
     private User authenticate(String username, String password) throws Exception {
     	
-    	User user = (User) new DbQuery("SELECT u FROM User u WHERE u.username = :un AND u.password = :pw")
+    	User user = (User) new DbSelect("SELECT u FROM User u WHERE u.username = :un AND u.password = :pw")
     			.addParam("un", username)
 				.addParam("pw", HashBuilder.sha512(password, SALT))
 				.getSingleResult();
@@ -73,7 +73,7 @@ public class Authentication {
     	String token = new BigInteger(130, random).toString(32);
 		
 		try {
-			userToken = (Token) new DbQuery("SELECT t FROM Token t WHERE t.user = :user")
+			userToken = (Token) new DbSelect("SELECT t FROM Token t WHERE t.user = :user")
 	    			.addParam("user", user)
 	    			.getSingleResult();
 			userToken.setCreationDate(new Date());

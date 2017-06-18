@@ -20,7 +20,7 @@ import de.urkallinger.kallingapp.datastructure.Role;
 import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
-import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.database.DbSelect;
 import de.urkallinger.kallingapp.webservice.rest.Param.Id;
 import de.urkallinger.kallingapp.webservice.rest.authentication.Secured;
 import de.urkallinger.kallingapp.webservice.utils.HashBuilder;
@@ -73,7 +73,7 @@ public class UserProvider {
 
 		try {
 			List<User> users;
-			users = ListUtils.castList(User.class, new DbQuery("SELECT u FROM Users u").getResultList());
+			users = ListUtils.castList(User.class, new DbSelect("SELECT u FROM User u").getResultList());
 			return Response.ok(users).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
@@ -94,7 +94,7 @@ public class UserProvider {
 			LOGGER.info(String.format("new getUser request for user ID %d (user: '%s', ip: %s)", 
 					input.getId(), ctx.getUserPrincipal().getName(), request.getRemoteAddr()));
 			
-			User user = (User) new DbQuery("SELECT u FROM User u WHERE u.id = :id")
+			User user = (User) new DbSelect("SELECT u FROM User u WHERE u.id = :id")
 									.addParam("id", input.getId())
 									.getSingleResult();
 			
@@ -102,7 +102,7 @@ public class UserProvider {
 		} catch (NoResultException e) {
 			String msg = String.format("No user found with id %d", input.getId());
 			LOGGER.error(msg);
-			return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(msg)).build();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

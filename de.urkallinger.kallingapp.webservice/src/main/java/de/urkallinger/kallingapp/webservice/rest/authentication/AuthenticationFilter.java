@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
 import de.urkallinger.kallingapp.datastructure.Token;
 import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.config.RestConfiguration;
-import de.urkallinger.kallingapp.webservice.database.DbQuery;
+import de.urkallinger.kallingapp.webservice.database.DbSelect;
+import de.urkallinger.kallingapp.webservice.rest.Param;
 
 @Secured
 @Provider
@@ -64,11 +65,14 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 			requestContext.setSecurityContext(createSecurityContext(currSecCtx, tok.getUser().getUsername()));
 
 		} catch (NoResultException e) {
-			LOGGER.error("User could not be authenticated because of an invalid token");
-			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+			String msg = "User could not be authenticated because of an invalid token";
+			LOGGER.error(msg);
+			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+					.entity(new Param.Message(msg)).build());
 		} catch (NotAuthorizedException e) {
 			LOGGER.error(e.getMessage());
-			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+					.entity(new Param.Message(e.getMessage())).build());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
@@ -76,7 +80,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 	}
 
 	private Token validateToken(String token) throws Exception {
-		Token tok = (Token) new DbQuery("SELECT t FROM Token t WHERE t.token = :token")
+		Token tok = (Token) new DbSelect("SELECT t FROM Token t WHERE t.token = :token")
 				.addParam("token", token)
 				.getSingleResult();
 
