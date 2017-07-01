@@ -15,4 +15,14 @@
     <string name="motion_menu_add_attachment">Anhang hinzufügen</string>
     <string name="empty_textfield_error">Dieses Feld muss ausgefüllt werden.</string>
     <string name="motion_detail_edit">Bearbeiten</string>
+    <string name="action_sign_in">Anmelden oder registrieren</string>
+    <string name="action_sign_in_short">Anmelden</string>
+    <string name="error_field_required">Dieses Feld muss ausgefüllt werden.</string>
+    <string name="error_incorrect_password">Passwort falsch</string>
+    <string name="error_invalid_email">E-Mail-Adresse falsch</string>
+    <string name="error_invalid_password">Dieses Passwort ist zu kurz</string>
+    <string name="prompt_email">"        completions.\""</string>
+    <string name="prompt_password">"    "</string>
+    <string name="title_activity_login">Anmeldung</string>
+    <string name="permission_rationale">\"Contacts permissions are needed for providing email</string>
 </resources>

@@ -2,6 +2,7 @@ package de.urkallinger.kallingapp;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity
 
         //setContentFragment(new MainFragment());
         setContentFragment(new TestFragment());
+        // TODO: Wenn Benutzername und Passwort vorhanden, dann MainFragment, sonst Login
     }
 
     @Override

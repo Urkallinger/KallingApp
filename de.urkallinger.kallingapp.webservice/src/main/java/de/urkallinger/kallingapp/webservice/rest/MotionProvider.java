@@ -1,5 +1,6 @@
 package de.urkallinger.kallingapp.webservice.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import de.urkallinger.kallingapp.datastructure.Motion;
 import de.urkallinger.kallingapp.datastructure.Role;
+import de.urkallinger.kallingapp.datastructure.User;
 import de.urkallinger.kallingapp.datastructure.exceptions.ValidationException;
 import de.urkallinger.kallingapp.datastructure.params.Param;
 import de.urkallinger.kallingapp.webservice.database.DatabaseHelper;
@@ -98,6 +100,13 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 		try {
 			motion.validate();
 			DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+			User creator = (User) new DbSelect("SELECT u FROM User u WHERE u.username = :un")
+				.addParam("un", ctx.getUserPrincipal().getName())
+				.getSingleResult();
+			
+			motion.setCreator(creator);
+			motion.setCreationDate(new Date());
+			
 			dbHelper.persist(motion);
 			
 			return Response.ok(new Param.Id(motion.getId())).build(); 
@@ -106,6 +115,7 @@ private final static Logger LOGGER = LoggerFactory.getLogger(MotionProvider.clas
 			LOGGER.error(e.getMessage());
 			return Response.status(Response.Status.BAD_REQUEST).entity(new Param.Message(e.getMessage())).build();
 		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity(new Param.Message("An internal server error occurred."))
 					.build();

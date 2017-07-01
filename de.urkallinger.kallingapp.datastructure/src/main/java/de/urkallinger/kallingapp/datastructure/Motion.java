@@ -32,17 +32,16 @@ public class Motion extends DataObject<Motion> {
 	@JsonProperty("title")
     private String title;
 	
+	@Required
 	@Lob
     @Column
     @JsonProperty("description")
     private String description;
     
-	@Required
 	@OneToOne
 	@JsonProperty("creator")
     private User creator;
     
-	@Required
 	@Column(nullable=false)
 	@JsonProperty("creationDate")
     private Date creationDate;
