@@ -27,7 +27,7 @@ public class DataHandler {
 
     private static DataHandler instance = null;
 
-    private static final String BASE_URL = "http://188.102.243.65:8080/kallingapp/";
+    private static final String BASE_URL = "http://188.106.1.198:8080/kallingapp/";
 
 
 

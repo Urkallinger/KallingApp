@@ -6,6 +6,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>KallingAppWebService</name>
 
+	<properties>
+		<!-- ================================= GENERAL ================================== -->
+		<general.main.class>de.urkallinger.kallingapp.webservice.RestServer</general.main.class>
+	</properties>
+
 	<parent>
 		<groupId>de.urkallinger.kallingapp.maven</groupId>
 		<artifactId>de.urkallinger.kallingapp.maven</artifactId>
@@ -94,6 +99,8 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.name}</finalName>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -104,29 +111,19 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven.plugin.assembly.version}</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>repackage</goal>
 						</goals>
 						<configuration>
-							<finalName>${project.name}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<archive>
-								<manifest>
-									<mainClass>
-										de.urkallinger.kallingapp.webservice.RestServer
-									</mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
+							<mainClass>
+								${general.main.class}
+							</mainClass>
 						</configuration>
 					</execution>
 				</executions>

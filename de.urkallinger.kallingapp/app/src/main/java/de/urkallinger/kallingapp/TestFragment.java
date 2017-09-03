@@ -122,7 +122,7 @@ public class TestFragment extends Fragment {
         dataHandler.getMotions(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                updateDescription("FAILED", false);
             }
 
             @Override

@@ -20,10 +20,12 @@ public class RestConfiguration {
 	
 	private int tokenDurabilityPeriod;
 	private String tokenDurabilityUnit;
+	private int serverPort;
 
 	public RestConfiguration() {
 		this.tokenDurabilityPeriod = 1;
 		this.tokenDurabilityUnit = ChronoUnit.HOURS.toString().toUpperCase();
+		this.serverPort = 8080;
 	}
 
 	public int getTokenDurabilityPeriod() {
@@ -46,5 +48,12 @@ public class RestConfiguration {
 	public void setTokenDurabilityUnit(ChronoUnit unit) {
 		this.tokenDurabilityUnit = unit.toString().toUpperCase();
 	}
-
+	
+	public int getServerPort() {
+		return serverPort;
+	}
+	
+	public void setServerPort(int port) {
+		this.serverPort = port;
+	}
 }

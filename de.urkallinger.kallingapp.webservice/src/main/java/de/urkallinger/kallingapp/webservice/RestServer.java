@@ -1,5 +1,7 @@
 package de.urkallinger.kallingapp.webservice;
 
+import javax.persistence.PersistenceException;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -30,12 +32,15 @@ public class RestServer {
 	public void startServer() throws InterruptedException {
 		ConfigurationManager.createOrUpdateConfiguration();
 		
-		updateDynDns();
+		int port = ConfigurationManager.loadConfiguration().getRestConfig().getServerPort();
+		
+		// Hostname ist abgelaufen...
+		//updateDynDns();
 		
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 
-        jettyServer = new Server(8080);
+        jettyServer = new Server(port);
         jettyServer.setHandler(context);
 
         ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/*");
@@ -55,12 +60,14 @@ public class RestServer {
         	db.getEntityManager().close();
         	
             jettyServer.start();
-            LOGGER.info("Server-IP: " + WebUtils.getPublicIp());
+            LOGGER.info(String.format("Server-Address: %s:%d", WebUtils.getPublicIp(), port));
             jettyServer.join();
         } catch (InterruptedException e) {
-        	LOGGER.warn("rest server got interrupted", e);
+        	LOGGER.warn("Rest server got interrupted", e);
+		} catch(PersistenceException e) {
+			LOGGER.error("Rest server could not connect to the database.");
 		} catch (Exception e) {
-        	LOGGER.error("an error occurred while starting server", e);
+        	LOGGER.error("An error occurred while starting server", e);
         }
         finally {
         	destroy();
