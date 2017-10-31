@@ -9,12 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 public class DynDnsConfiguration {
 
+	private DynDnsProvider provider;
 	private String hostName;
 	private String hostIp;
 	private String username;
 	private String password;
 
 	public DynDnsConfiguration() {
+		this.provider = DynDnsProvider.NO_DYN_DNS;
 		this.hostName = "";
 		this.hostIp = "";
 		this.username = "";	
@@ -51,5 +53,13 @@ public class DynDnsConfiguration {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public DynDnsProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(DynDnsProvider provider) {
+		this.provider = provider;
 	}
 }

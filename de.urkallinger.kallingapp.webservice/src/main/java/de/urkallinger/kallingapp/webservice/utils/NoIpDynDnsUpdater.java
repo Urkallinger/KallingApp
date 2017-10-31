@@ -1,6 +1,7 @@
 package de.urkallinger.kallingapp.webservice.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -16,11 +17,11 @@ import de.urkallinger.kallingapp.webservice.config.ConfigurationManager;
 import de.urkallinger.kallingapp.webservice.config.DynDnsConfiguration;
 import de.urkallinger.kallingapp.webservice.exceptions.InvalidConfigurationException;
 
-public class NoIpDynDnsUpdater implements Runnable {
+public class NoIpDynDnsUpdater implements DynDnsUpdater {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(NoIpDynDnsUpdater.class);
 
-	void updateDynDNS() throws Exception {
+	public void updateDynDns() throws IOException {
 		Configuration cfg = ConfigurationManager.loadConfiguration();
 		DynDnsConfiguration dnsCfg = cfg.getDynDnsConfig();
 		String hostIp = WebUtils.getPublicIp();
@@ -130,8 +131,8 @@ public class NoIpDynDnsUpdater implements Runnable {
 	@Override
 	public void run() {
 		try {
-			updateDynDNS();
-		} catch (Exception e) {
+			updateDynDns();
+		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 	}
